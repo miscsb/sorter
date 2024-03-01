@@ -1,2 +1,3 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<h1>Welcome to Sorter</h1>
+<br />
+<p>Click on "Setup" above or any one of the presets below to start sorting!</p>
