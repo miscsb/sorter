@@ -14,7 +14,6 @@
         <a href="/">Home</a>
         <a href="/setup">Setup</a>
         <a href="/sorter">Sorter</a>
-        <a href="/graph">Graph</a>
     </nav>
     <br />
     <slot></slot>

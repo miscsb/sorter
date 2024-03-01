@@ -34,7 +34,11 @@
 
     function handleFormSubmit() {
         if (playlistId && nameRegex && artistRegex) {
-            window.location.href = `/sorter?playlistId=${playlistId}&nameRegex=${nameRegex}&artistRegex=${artistRegex}`
+            let params = new URLSearchParams();
+            params.append('playlistId', playlistId);
+            params.append('nameRegex', nameRegex);
+            params.append('artistRegex', artistRegex);
+            window.location.href = `/sorter?${params.toString()}`;
         }
     };
 </script>
