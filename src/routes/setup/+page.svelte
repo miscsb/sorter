@@ -1,13 +1,13 @@
 <script lang=ts>
-    import { Button, FormGroup, Form, TextInput, NumberInput } from 'carbon-components-svelte';
+    import { Button, FormGroup, Form, TextInput, NumberInput, LocalStorage } from 'carbon-components-svelte';
 
     let playlistUrl      : string = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M";
-    let nameRegexInput   : string = "^.*$";
-    let artistRegexInput : string = "^.*$";
+    let nameRegexInput   : string = "";
+    let artistRegexInput : string = "";
 
     $: playlistId  = parseUrl(playlistUrl);
-    $: nameRegex   = validate(nameRegexInput);
-    $: artistRegex = validate(artistRegexInput);
+    $: nameRegex   = validate(nameRegexInput) || "^.*$";
+    $: artistRegex = validate(artistRegexInput) || "^.*$";
     $: raceCap     = 5;
 
     function parseUrl(url: string): null | string {
@@ -45,6 +45,10 @@
     };
 </script>
 
+<LocalStorage key='playlistUrl' bind:value={playlistUrl}/>
+<LocalStorage key='nameRegex' bind:value={nameRegex}/>
+<LocalStorage key='artistRegex' bind:value={artistRegex}/>
+
 <h1>Sorter Setup</h1>
 <br />
 <Form on:submit={handleFormSubmit}>
@@ -59,7 +63,7 @@
             invalidText="Invalid URL" />
         <br />
         <TextInput
-            labelText="Name Regex"
+            labelText="Name Pattern"
             placeholder="Enter regex to match the song name on..." 
             bind:value={nameRegexInput} 
             
@@ -67,7 +71,7 @@
             invalidText="Invalid regex" />
         <br />
         <TextInput
-            labelText="Artist Regex"
+            labelText="Artist Pattern"
             placeholder="Enter regex to match the artist name on..." 
             bind:value={artistRegexInput}
 

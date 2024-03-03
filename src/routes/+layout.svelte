@@ -13,7 +13,6 @@
     <nav>
         <a href="/">Home</a>
         <a href="/setup">Setup</a>
-        <a href="/sorter">Sorter</a>
     </nav>
     <br />
     <slot></slot>
