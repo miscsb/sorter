@@ -1,7 +1,7 @@
 <script lang=ts>
     import { RaceSort } from "$lib/racesort";
 	import type { Track } from "@spotify/web-api-ts-sdk";
-	import { LocalStorage, ClickableTile, Column, Grid, Row, Button, DataTable, Tooltip } from "carbon-components-svelte";
+	import { LocalStorage, ClickableTile, Column, Grid, Row, Button, DataTable, ProgressBar } from "carbon-components-svelte";
     import { TreeChart } from '@carbon/charts-svelte'
     import '@carbon/charts-svelte/styles.css'
     import type { PageData } from "./$types";
@@ -28,6 +28,9 @@
         sorter = sorter;
         currentRace = sorter.findRace() ?? [];
     }
+
+    // TODO fix progress
+    $: progress = Math.min(100, 100 * (raceNumber - 1) / data.songs.length);
 
     afterUpdate(() => {
        const elements = document.getElementsByClassName('decrease-volume');
@@ -68,12 +71,16 @@
     };});
 </script>
 
+<ProgressBar value={progress}
+    labelText="Progress"
+    helperText="{progress}%"/>
+
 {#if currentRace.length > 0}
     <h1>Sorting "{data.title}"</h1>
     <br/>
     <h3>Race {raceNumber}</h3>
     <br/>
-    <Button on:click={() => { updateSorter(); raceNumber = raceNumber + 1;}}>
+    <Button on:click={() => { updateSorter(); raceNumber = raceNumber + 1; }}>
         Run Race
     </Button>
     <br/><br/>
