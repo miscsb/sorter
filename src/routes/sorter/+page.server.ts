@@ -9,11 +9,12 @@ export const load: PageServerLoad = async ({ url }) => {
         process.env.SPOTIFY_CLIENT_SECRET
     );
 
-    console.log("url is " + url.href);
     const urlParams = new URLSearchParams(url.search);
+    if (!urlParams.has('playlistId')) return { songs: [], title: '', url: '' };
     const playlistId  = urlParams.get('playlistId')!;
-    const nameRegex   = new RegExp(urlParams.get('nameRegex')!);
-    const artistRegex = new RegExp(urlParams.get('artistRegex')!);
+    
+    const nameRegex   = new RegExp(urlParams.get('nameRegex') ?? "^.*$");
+    const artistRegex = new RegExp(urlParams.get('artistRegex') ?? "^.*$");
 
     let songs : Track[] = [];
 
@@ -32,7 +33,14 @@ export const load: PageServerLoad = async ({ url }) => {
         );
     }
 
+    let title = (await api.playlists.getPlaylist(playlistId)).name;
+
 	return {
 		songs: songs
+            .map(value => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value),
+        title: title,
+        url: `open.spotify.com/playlist/${playlistId}`
 	};
 };
