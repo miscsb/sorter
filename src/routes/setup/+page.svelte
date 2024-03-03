@@ -1,5 +1,5 @@
 <script lang=ts>
-    import { Button, FormGroup, Form, TextInput } from 'carbon-components-svelte';
+    import { Button, FormGroup, Form, TextInput, NumberInput } from 'carbon-components-svelte';
 
     let playlistUrl      : string = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M";
     let nameRegexInput   : string = "^.*$";
@@ -8,6 +8,7 @@
     $: playlistId  = parseUrl(playlistUrl);
     $: nameRegex   = validate(nameRegexInput);
     $: artistRegex = validate(artistRegexInput);
+    $: raceCap     = 5;
 
     function parseUrl(url: string): null | string {
         const regex = /(?<=playlist[:\/])[a-zA-Z0-9]+/;
@@ -38,6 +39,7 @@
             params.append('playlistId', playlistId);
             params.append('nameRegex', nameRegex);
             params.append('artistRegex', artistRegex);
+            params.append('raceCap', "" + raceCap);
             window.location.href = `/sorter?${params.toString()}`;
         }
     };
@@ -71,6 +73,8 @@
 
             invalid={artistRegex === null}
             invalidText="Invalid regex" />
+        <br />
+        <NumberInput required label='Maximum number of participants per race' bind:value={raceCap}/>
     </FormGroup>
     <br />
     <Button type="submit">Let's sort!</Button>

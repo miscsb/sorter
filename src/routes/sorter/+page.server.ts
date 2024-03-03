@@ -10,11 +10,12 @@ export const load: PageServerLoad = async ({ url }) => {
     );
 
     const urlParams = new URLSearchParams(url.search);
-    if (!urlParams.has('playlistId')) return { songs: [], title: '', url: '' };
+    if (!urlParams.has('playlistId')) return { raceCap: 5, songs: [], title: '', url: '' };
     const playlistId  = urlParams.get('playlistId')!;
     
     const nameRegex   = new RegExp(urlParams.get('nameRegex') ?? "^.*$");
     const artistRegex = new RegExp(urlParams.get('artistRegex') ?? "^.*$");
+    const raceCap : number = parseInt(urlParams.get('raceCap') ?? '5') ?? 5;
 
     let songs : Track[] = [];
 
@@ -36,6 +37,7 @@ export const load: PageServerLoad = async ({ url }) => {
     let title = (await api.playlists.getPlaylist(playlistId)).name;
 
 	return {
+        raceCap: raceCap,
 		songs: songs
             .map(value => ({ value, sort: Math.random() }))
             .sort((a, b) => a.sort - b.sort)

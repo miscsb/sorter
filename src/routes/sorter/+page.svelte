@@ -11,7 +11,7 @@
     let raceNumber : number = 1;
 
     export let data: PageData;
-    let sorter : RaceSort<Track> = new RaceSort(5, data.songs, song => song.name);
+    let sorter : RaceSort<Track> = new RaceSort(data.raceCap, data.songs, song => song.name);
     let currentRace = sorter?.findRace() ?? [];
 
     const options = {
@@ -71,14 +71,14 @@
     };});
 </script>
 
-<ProgressBar value={progress}
-    labelText="Progress"
-    helperText="{progress}%"/>
-
 {#if currentRace.length > 0}
     <h1>Sorting "{data.title}"</h1>
     <br/>
     <h3>Race {raceNumber}</h3>
+    <br/>
+    <ProgressBar value={progress}
+        labelText="Progress"
+        helperText="{progress}%"/>
     <br/>
     <Button on:click={() => { updateSorter(); raceNumber = raceNumber + 1; }}>
         Run Race
