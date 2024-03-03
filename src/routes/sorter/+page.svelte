@@ -1,12 +1,12 @@
 <script lang=ts>
-    import { RaceSort } from "$lib/racesort";
-	import type { Track } from "@spotify/web-api-ts-sdk";
-	import { LocalStorage, ClickableTile, Column, Grid, Row, Button, DataTable, ProgressBar } from "carbon-components-svelte";
+    import { onMount } from "svelte";
+    import { flip } from "svelte/animate";
+    import { LocalStorage, ClickableTile, Column, Grid, Row, Button, DataTable, ProgressBar } from "carbon-components-svelte";
     import { TreeChart } from '@carbon/charts-svelte'
     import '@carbon/charts-svelte/styles.css'
+    import type { Track } from "@spotify/web-api-ts-sdk";
+    import { RaceSort } from "$lib/racesort";
     import type { PageData } from "./$types";
-	import { afterUpdate, beforeUpdate, onMount } from "svelte";
-	import { flip } from "svelte/animate";
     
     let raceNumber : number = 1;
 
@@ -31,14 +31,12 @@
 
     // TODO fix progress
     $: progress = Math.min(100, 100 * (raceNumber - 1) / data.songs.length);
-
-    afterUpdate(() => {
-       const elements = document.getElementsByClassName('decrease-volume');
-       for (let i = 0; i < elements.length; i++) {
-            const element = elements.item(i) as HTMLAudioElement;
-            element.volume = 0.4;
-        }
-    });
+    $: result = (sorter.toArray() ?? []).map((song, i) => ({
+        id: i + 1,
+        rank: i + 1,
+        name: song.name,
+        artist: song.artists[0].name,
+    }));
 
     const dragDuration = 300
 	let draggingCard : Track | undefined;
@@ -48,11 +46,9 @@
 		if (draggingCard === undefined || draggingCard === card || animatingCards.has(card)) return
 		animatingCards.add(card)
 		setTimeout(() => animatingCards.delete(card), dragDuration)
-		const cardAIndex = currentRace.indexOf(draggingCard)
-		const cardBIndex = currentRace.indexOf(card)
-        if (Math.abs(cardAIndex - cardBIndex) > 1) return;
-		currentRace[cardAIndex] = card
-		currentRace[cardBIndex] = draggingCard
+		const [i, j] = [currentRace.indexOf(draggingCard), currentRace.indexOf(card)]
+		currentRace[i] = card
+		currentRace[j] = draggingCard
 	}
 
     onMount(() => {
@@ -61,14 +57,12 @@
             img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
             event.dataTransfer?.setDragImage(img, 0, 0);
         }, false);
-    })
 
-    $: result = (sorter.toArray() ?? []).map((song, i) => { return {
-        id: i + 1,
-        rank: i + 1,
-        name: song.name,
-        artist: song.artists[0].name,
-    };});
+        const elements = document.getElementsByClassName('decrease-volume');
+        for (let i = 0; i < elements.length; i++) {
+            (elements.item(i) as HTMLAudioElement).volume = 0.4;
+        }
+    })
 </script>
 
 {#if currentRace.length > 0}
@@ -135,3 +129,5 @@
     rows={result}
 />
 {/if}
+
+<!-- <DraggableCard /> -->
